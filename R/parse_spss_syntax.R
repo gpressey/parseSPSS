@@ -14,7 +14,7 @@ df <- df_info$data
 df_dict <- df_info$dictionary
 
 df %>%
-  mutate(age = as.numeric(as.character(age)), dgree = fct_inseq(dgree))
+  mutate(age = as.numeric(as.character(age))) %>%
   filter(age > 14) %>%
   ggplot(aes(x = age, fill = dgree)) +
   geom_bar(position = "fill", width = 1) +
@@ -23,6 +23,7 @@ df %>%
   #facet_wrap(~ dgree, ncol = 2) +
   labs(
     title = "Educational attainment by age, Canada, 1976",
+    caption = "Source: StatCan, Census of Canada 1976 PUMF",
     fill = "",
     x = "Age",
     y = ""
