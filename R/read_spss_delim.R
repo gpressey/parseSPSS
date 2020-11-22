@@ -1,4 +1,4 @@
-read_sps_delim <- function(syntax, filename){
+read_sps_fwf <- function(syntax, filename){
 
   # load the syntax file
   df_syntax <-

@@ -6,7 +6,7 @@
 
 library(tidyverse)
 
-df_info <- read_sps_delim(
+df_info <- read_sps_fwf(
   syntax = here::here("data","indiv76_eng.sps"),
   filename = here::here("data", "indiv76.txt"))
 
