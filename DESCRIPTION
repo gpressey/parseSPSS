@@ -1,11 +1,12 @@
 Package: parseSPSS
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Reads Fixed-width Files descripted by SPSS Syntax
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Graham Pressey
+Maintainer: Graham Pressey <graham.pressey@gmail.com>
+Description: The package parses SPSS syntax files describing fixed width text files.
+    Often datafiles are provided by institutions such as Statistics Canada in a fixed width text file, with variables described in an SPSS syntax file (.sps format). This package is designed to avoid the tedious, manual work of reworking into an R script, and hopefully will be especially useful if a researcher has to ingest several FWFs.
+Requires: tidyverse
+License: None yet
 Encoding: UTF-8
 LazyData: true
