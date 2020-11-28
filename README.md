@@ -1,7 +1,7 @@
 # parseSPSS
 The package parses SPSS syntax files describing fixed width text files.
 
-Often datafiles are provided by institutions such as Statistics Canada in a fixed width text file, with variables described in an SPSS syntax file (`.sps` format). This package is designed to avoid the tedious, manual work of 
+Often datafiles are provided by institutions such as Statistics Canada in a fixed width text file, with variables described in an SPSS syntax file (`.sps` format). This package is designed to avoid the tedious, manual work of reworking into an R script, and hopefully will be especially useful if a researcher has to ingest several FWFs.
 
 # status
 
