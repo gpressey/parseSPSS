@@ -8,6 +8,7 @@ get_spss_variable_labels <- function(command){
   # collapse vector to one element
   command <- unlist(paste(command, collapse = " "))
   # remove the first two words (variable labels) and the final period
+  command <- str_squish(command)
   command <- str_remove(command, "^.*? .*? ")
   command <- str_remove(command ,"\\.$")
   # separate into different vectors based on quotation marks. Need to unlist again
@@ -18,6 +19,7 @@ get_spss_variable_labels <- function(command){
   tibble(
     command = command,
     # we know that a name will be followed by a label
+    # but, can be multiple names. So what then? I'll need to separate and fill.
     name = rep(c("col_name","col_label"), length(command)/2),
     id = (1:length(command) + 1) %/% 2
   ) %>%

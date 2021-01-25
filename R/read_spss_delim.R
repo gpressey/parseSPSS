@@ -1,11 +1,6 @@
-read_sps_fwf <- function(syntax, filename){
 
-  # load the syntax file
-  df_syntax <-
-    read_delim(
-      file = syntax,
-      delim = "\n",
-      col_names = "command") %>%
+get_commands <- function(spss_syntax){
+  spss_syntax %>%
     mutate(
       # breaking out each command.
       #command = stringi::stri_escape_unicode(command),
@@ -20,15 +15,29 @@ read_sps_fwf <- function(syntax, filename){
         new_command ~ "not_implemented"
       )
     ) %>%
+    select(-end_command, -new_command) %>%
     # now, we'll fill in the missing values so we can nest the files
     fill(type, .direction = "down") %>%
     nest(data = -type)
 
+}
+
+read_sps_fwf <- function(syntax, filename){
+
+  # load the syntax file
+  df_syntax <-
+    read_delim(
+      file = syntax,
+      delim = "\n",
+      col_names = "command")
+
+  all_commands <- get_commands(df_syntax)
+
   # extract the file widths
-  file_details <- df_syntax %>%
+  file_details <- all_commands %>%
     filter(type == "delim") %>%
     mutate(
-      do = map(data, get_spss_delims)) %>%
+      do = map(data, ~get_spss_delims(.x$command))) %>%
     select(do) %>%
     unnest(do)
 
@@ -45,14 +54,16 @@ read_sps_fwf <- function(syntax, filename){
   # extract the variable labels
   variable_labels <- df_syntax %>%
     filter(type == "variable_label") %>%
-    mutate(do = map(data, get_spss_variable_labels)) %>%
+    mutate(do = map(data, ~get_spss_variable_labels(.x$command))) %>%
     select(do) %>%
     unnest(do)
+
+  #print(variable_labels)
 
   # extract the value labels
   value_labels <- df_syntax %>%
     filter(type == "value_label") %>%
-    mutate(do = map(data, get_spss_value_labels)) %>%
+    mutate(do = map(data, ~get_spss_value_labels(.x$command))) %>%
     select(do) %>%
     unnest(do)
 
@@ -66,22 +77,22 @@ read_sps_fwf <- function(syntax, filename){
 
     # first, extract the labels from the dictionary
     df_labels <- df_dictionary %>%
-      filter(col_name == .x) %>%
-      select(value_labels) %>%
-      unnest(value_labels)
+      filter(col_name == .x)
 
     # the numeric vector we're making into a factor
     vector <- df_census[[.x]]
 
     # not all elements of the vector will be labelled. If an element is present
     # without a name, the factor name is numeric value
-    df_names <- tibble(
-      # take all the unique values
-      level = df_census[[.x]] %>% unique()) %>%
+    df_names <-
+      tibble(
+        # take all the unique values
+        level = unique(vector)
+      ) %>%
       # sorting should put the factor labels in the correct order
       arrange(level) %>%
       # join the character labels to the numeric levels
-      left_join(df_labels) %>%
+      left_join(df_labels, by = c("level" = "col_name_value")) %>%
       # if there's no character label the value should be that of the level
       mutate(label = if_else(is.na(label), as.character(level), label))
 
